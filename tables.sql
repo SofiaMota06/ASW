@@ -1,49 +1,50 @@
 CREATE TABLE Users(
-    id_user INT PRIMARY KEY,
-    username VARCHAR,
-    email VARCHAR,
+    id_user SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
     bio VARCHAR,
-    profile_picture,
-    profile_color INT,
-    access_level INT,
+    profile_picture VARCHAR(255), -- Url da Imagem 
+    profile_color VARCHAR(25), -- "terracota", "cyan", "verde"
+    access_level INT DEFAULT 0 CHECK (access_level IN (0,1)), -- 0 - User, 1 - Moderador
 )
 
 
 
 CREATE TABLE Study_sessions(
-    id_study INT PRIMARY KEY,
-    id_user INT FOREIGN KEY REFERENCES Users(id_user),
-    subject VARCHAR,
-    date DATETIME,
-    duration TIME,
+    id_study SERIAL PRIMARY KEY, 
+    id_user INT FOREIGN KEY REFERENCES Users(id_user) ON DELETE Cascade,
+    subject VARCHAR(50) NOT NULL,
+    created_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+    duration INT NOT NULL,
 )
 
 
 
 CREATE TABLE Posts(
-    id_post INT PRIMARY KEY,
-    id_user INT FOREIGN KEY REFERENCES Users(id_user),
-    title VARCHAR,
+    id_post SERIAL PRIMARY KEY,
+    id_user INT NOT NULL FOREIGN KEY REFERENCES Users(id_user) ON DELETE Cascade,
+    title VARCHAR(120) NOT NULL,
     text TEXT,
-    post_color INT,
-    hashtag VARCHAR,
-    date DATETIME,
-    attachment_type VARCHAR,
+    post_color VARCHAR(25), -- "terracota", "cyan", "verde"
+    hashtag VARCHAR(50),
+    file_url varchar(255),  /*O link para o PDF no Cloudinary*/
+    file_type varchar(20), /*pdf ,image*/
+    created_date timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP
 )
 
 
 
 CREATE TABLE Comments(
-    id_comment INT PRIMARY KEY,
-    id_post INT FOREIGN KEY REFERENCES Post(id_post),
-    id_user INT FOREIGN KEY REFERENCES Users(id_user),
-    text TEXT,
-    date DATETIME,
+    id_comment SERIAL PRIMARY KEY,
+    id_post INT FOREIGN KEY NOT NULL REFERENCES Posts(id_post) ON DELETE Cascade,
+    id_user INT FOREIGN KEY NOT NULL REFERENCES Users(id_user) ON DELETE Cascade,
+    text TEXT NOT NULL,
+    created_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 )
 
 
 
-import timestamp
 CREATE TABLE Friends (
     /*No vosso código Node.js, antes de inserirem na tabela, podem fazer um pequeno truque:
 const [user1, user2] = [idA, idB].sort();*/
@@ -55,7 +56,7 @@ const [user1, user2] = [idA, idB].sort();*/
 )
 
 CREATE TABLE Groups (
-    id_group int PRIMARY KEY,
+    id_group SERIAL PRIMARY KEY,
     name varchar(25) NOT NULL,
     created_date timestamp DEFAULT CURRENT_TIMESTAMP
 )
@@ -70,12 +71,12 @@ CREATE TABLE Groups_Members (
 
 
 CREATE TABLE Groups_Messages(
-    id_message int PRIMARY KEY,
+    id_message SERIAL PRIMARY KEY,
     id_group int REFERENCES Groups(id_group) ON DELETE Cascade,
     id_user int REFERENCES Users(id_user) ON DELETE Cascade,
     text varchar(9999),
     file_url varchar(255),  /*O link para o PDF no Cloudinary*/
-    file_type varchar(20), /*pdf ,image*/
+    file_type varchar(20) CHECK (file_type IN ('image', 'document', 'none')), /*pdf ,image*/
     created_date timestamp DEFAULT CURRENT_TIMESTAMP
 
 )
