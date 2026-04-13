@@ -1,0 +1,152 @@
+
+generator client {
+    provider = "prisma_client_js"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+
+// INFO --------------------------------------------------------------------------------------------------------------
+// @@map : para que o título das tabelas seja aquele, enquanto o do objeto fica em singular, Posts(tabela) vs Post(objeto)
+// ? : Quando acaba em ?, é porque o campo pode ser Null
+
+// Comando para tabelas SQL serem criadas auto:
+//      npx prisma migrate dev --name init_tabelas
+//--------------------------------------------------------------------------------------------------------------------
+
+
+// MODELOS DAS TABELAS
+model User {
+    id_user             Int         @id @default(autoincrement()) // Primary Key
+    username            String      @unique
+    email               String      @unique
+    password            String      @db.VarChar(50)
+    bio                 String?
+    profile_picture     String?     @db.VarChar(255)
+    profile_color       String      @default("terracota") @db.VarChar(25)
+    acess_level         Int         @default(0) // 0 - User, 1 - Moderador
+
+    // Relaçoes
+    study_sessions      StudySession[]
+    posts               Post[]
+    comments            Comment[]
+    group_members       GroupMember[]
+    messages            GroupMessage[]
+
+    // Relaçoes de Amizade
+    friends_sent        Friend[]    @relation("User1Friends")
+    friends_receive     Friend[]    @relation("User2Friends")
+
+    @@map("Users")
+
+}
+
+model StudySession {
+    id_study            Int         @id @default(autoincrement()) // Primary Key
+    id_user             Int
+    subject             String      @db.VarChar(50)
+    duration            Int
+    created_date        DateTime    @default(now())
+
+    // Foreign Key
+    user                User        @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+
+    @@map("Study_Sessions")
+
+}
+
+model Post {
+    id_post             Int         @id @default(autoincrement()) // Primary Key
+    id_user             Int
+    title               String      @db.VarChar(120)
+    text                String?     @db.Text
+    post_color          String?     @db.VarChar(25)
+    hashtag             String?     @db.VarChar(50)
+    file_url            String?     @db.VarChar(255)
+    file_type           String?     @db.VarChar(20) // ex: "image", "document", ou null
+    created_date        DateTime    @default(now())
+
+    // Relaçoes
+    user         User      @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+    comments     Comment[]
+
+    @@map("Posts")
+
+}
+
+
+model Comment {
+    id_comment          Int         @id @default(autoincrement()) // Primary Key
+    id_post             Int
+    id_user             Int
+    text                String      @db.Text
+    created_date        DateTime    @default(now())
+
+    // Foreign Key
+    post                Post        @relation(fields: [id_post], references: [id_post], onDelete: Cascade)
+    user                User        @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+
+    @@map("Comments")
+}
+
+model Friend {
+    id_user1            Int
+    id_user2            Int
+    state               String      @default("pending") @db.VarChar(16) // "pending" ou "accepted"
+
+    // Foreign Keys
+    user1               User        @relation("User1Friends", fields: [id_user1], references: [id_user], onDelete: Cascade)
+    user2               User        @relation("User2Friends", fields: [id_user2], references: [id_user], onDelete: Cascade)
+
+    // Primary Key Composta
+    @@id([id_user1, id_user2])
+
+    @@map("Friends")
+}
+
+model Group {
+    id_group            Int         @id @default(autoincrement()) // Primary Key
+    name                String      @db.VarChar(25)
+    created_date        DateTime    @default(now())
+
+    // Relações
+    members             GroupMember[]
+    messages            GroupMessage[]
+
+    @@map("Groups")
+}
+
+
+model GroupMember {
+    id_group            Int
+    id_user             Int
+    level               Int         @default(0) // 0: Membro, 1: Admin
+
+    // Foreign Keys
+    group               Group       @relation(fields: [id_group], references: [id_group], onDelete: Cascade)
+    user                User        @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+
+    // Primary Key Composta
+    @@id([id_group, id_user])
+
+    @@map("Groups_Members")
+}
+
+
+model GroupMessage {
+    id_message          Int         @id @default(autoincrement()) // Primary Key
+    id_group            Int
+    id_user             Int
+    text                String      @db.VarChar(9999)
+    file_url            String?     @db.VarChar(255)
+    file_type           String?     @db.VarChar(20)
+    created_date        DateTime    @default(now())
+
+    // Foreign Keys
+    group               Group       @relation(fields: [id_group], references: [id_group], onDelete: Cascade)
+    user                User        @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+
+    @@map("Groups_Messages")
+}

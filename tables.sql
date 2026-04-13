@@ -1,11 +1,12 @@
+
 CREATE TABLE Users(
     id_user SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    password VARCHAR(50) NOT NULL,
     bio VARCHAR,
     profile_picture VARCHAR(255), -- Url da Imagem 
-    profile_color VARCHAR(25), -- "terracota", "cyan", "verde"
+    profile_color VARCHAR(25) DEFAULT("terracota"), -- "terracota", "cyan", "verde"
     access_level INT DEFAULT 0 CHECK (access_level IN (0,1)), -- 0 - User, 1 - Moderador
 )
 
