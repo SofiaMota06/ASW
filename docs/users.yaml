@@ -1,0 +1,56 @@
+paths:
+  /api/users:
+    get:
+      tags: [Users]
+      summary: Lista todos os utilizadores
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/User'
+    post:
+      tags: [Users]
+      summary: Regista um novo utilizador
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, email, password]
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        201:
+          description: Utilizador criado
+
+  /api/study-sessions:
+    post:
+      tags: [Study Sessions]
+      summary: Cria uma nova sessão de estudo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id_user, subject, duration]
+              properties:
+                id_user:
+                  type: integer
+                subject:
+                  type: string
+                duration:
+                  type: integer
+      responses:
+        201:
+          description: Sessão registada
