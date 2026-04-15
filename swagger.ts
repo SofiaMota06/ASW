@@ -3,7 +3,7 @@ const options = {
 definition: {
 openapi: '3.0.0',
 info: {
-title: 'Library API',
+title: 'Study APP',
 version: '1.0.0',
 description: 'Documentação organizada por ficheiros YAML'
 },
