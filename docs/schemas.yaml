@@ -3,54 +3,45 @@ components:
     User:
       type: object
       properties:
-        id_user:
-          type: integer
-        username:
-          type: string
-        email:
-          type: string
-        bio:
-          type: string
-        profile_picture:
-          type: string
-        profile_color:
-          type: string
-          enum: [terracota, cyan, verde]
-        access_level:
-          type: integer
-          enum: [0, 1]
-          description: "0 = User, 1 = Moderador"
-
-    Post:
-      type: object
-      properties:
-        id_post:
-          type: integer
-        id_user:
-          type: integer
-        title:
-          type: string
-        text:
-          type: string
-        post_color:
-          type: string
-        hashtag:
-          type: string
-        file_url:
-          type: string
-        file_type:
-          type: string
-          enum: [pdf, image]
+        id_user: { type: integer, example: 1 }
+        username: { type: string, example: "joao_silva" }
+        email: { type: string, example: "joao@email.com" }
+        bio: { type: string, example: "Estudante de Engenharia" }
+        profile_picture: { type: string, example: "http://cloudinary.com/pic.jpg" }
+        profile_color: { type: string, enum: [terracota, cyan, verde], default: terracota }
+        access_level: { type: integer, enum: [0, 1], description: "0: User, 1: Moderador" }
 
     StudySession:
       type: object
       properties:
-        id_study:
-          type: integer
-        subject:
-          type: string
-        duration:
-          type: integer
-        created_date:
-          type: string
-          format: date-time
+        id_study: { type: integer }
+        id_user: { type: integer }
+        subject: { type: string, example: "Matemática" }
+        duration: { type: integer, description: "Duração em minutos" }
+        created_date: { type: string, format: date-time }
+
+    Post:
+      type: object
+      properties:
+        id_post: { type: integer }
+        id_user: { type: integer }
+        title: { type: string, maxLength: 120 }
+        text: { type: string }
+        post_color: { type: string }
+        hashtag: { type: string }
+        file_url: { type: string }
+        file_type: { type: string, enum: [pdf, image] }
+
+    Comment:
+      type: object
+      properties:
+        id_comment: { type: integer }
+        id_post: { type: integer }
+        id_user: { type: integer }
+        text: { type: string }
+
+    Group:
+      type: object
+      properties:
+        id_group: { type: integer }
+        name: { type: string, maxLength: 25 }
