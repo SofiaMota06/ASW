@@ -1,0 +1,46 @@
+paths:
+  /groups:
+    post:
+      tags: [Groups]
+      summary: Criar um novo grupo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/components/schemas/Group'
+
+  /groups/{id}/members:
+    post:
+      tags: [Groups]
+      summary: Adicionar utilizador a um grupo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_user: { type: integer }
+                level: { type: integer, enum: [0, 1] }
+
+  /groups/{id}/messages:
+    get:
+      tags: [Groups]
+      summary: Listar mensagens do grupo
+    post:
+      tags: [Groups]
+      summary: Enviar mensagem para o grupo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_user: { type: integer }
+                text: { type: string }
+                file_url: { type: string }
+                file_type: { type: string, enum: [image, document, none] }
