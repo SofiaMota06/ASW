@@ -1,0 +1,56 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id_user:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        bio:
+          type: string
+        profile_picture:
+          type: string
+        profile_color:
+          type: string
+          enum: [terracota, cyan, verde]
+        access_level:
+          type: integer
+          enum: [0, 1]
+          description: "0 = User, 1 = Moderador"
+
+    Post:
+      type: object
+      properties:
+        id_post:
+          type: integer
+        id_user:
+          type: integer
+        title:
+          type: string
+        text:
+          type: string
+        post_color:
+          type: string
+        hashtag:
+          type: string
+        file_url:
+          type: string
+        file_type:
+          type: string
+          enum: [pdf, image]
+
+    StudySession:
+      type: object
+      properties:
+        id_study:
+          type: integer
+        subject:
+          type: string
+        duration:
+          type: integer
+        created_date:
+          type: string
+          format: date-time
