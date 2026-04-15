@@ -1,0 +1,42 @@
+paths:
+  /api/posts:
+    get:
+      tags: [Posts]
+      summary: Retorna todos os posts
+      responses:
+        200:
+          description: Lista de posts
+    post:
+      tags: [Posts]
+      summary: Cria um novo post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/components/schemas/Post'
+      responses:
+        201:
+          description: Post criado
+
+  /api/friends:
+    post:
+      tags: [Social]
+      summary: Envia ou aceita pedido de amizade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_user1:
+                  type: integer
+                id_user2:
+                  type: integer
+                state:
+                  type: string
+                  enum: [pending, accepted]
+      responses:
+        200:
+          description: Estado de amizade atualizado
